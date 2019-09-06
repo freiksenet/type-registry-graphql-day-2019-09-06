@@ -77,7 +77,7 @@ type Foo {
 
 ---
 
-## GraphQL Frameworks are declarative
+### GraphQL Frameworks are declarative
 
 #### Prisma
 
@@ -106,13 +106,13 @@ const Foo = new GraphQLObjectType({
 
 ---
 
-# Programmatic is
+## Programmatic is
 
 <Appear>
 
-## using functions to create types
+#### using functions to create types
 
-## from other sources than a type config
+#### from other sources than a type config
 
 </Appear>
 
@@ -150,11 +150,11 @@ function createConnectionType(type) {
 
 ---
 
-# POV is important
+## POV is important
 
 <Appear>
 
-## User vs Library author
+### User vs Library author
 
 </Appear>
 
@@ -265,7 +265,7 @@ function createConnectionType(type) {
 
 ---
 
-## Types must be defined
+### Types must be defined
 
 ```js
 const Foo = new GraphQLObjectType({
@@ -280,7 +280,7 @@ const Foo = new GraphQLObjectType({
 
 ---
 
-## Workaround - Thunks
+### Workaround - Thunks
 
 
 ```js
@@ -294,7 +294,7 @@ const Foo = new GraphQLObjectType({
 
 ---
 
-## Circular modules
+### Circular modules
 
 ```js
 // Bar.js
@@ -306,7 +306,7 @@ const Bar = require('./Bar')
 
 ---
 
-## Workaround - Thunks 2
+### Workaround - Thunks 2
 
 ```js
   // ---
@@ -322,7 +322,7 @@ const Bar = require('./Bar')
 
 ---
 
-# Inspecting fields
+### Inspecting fields
 
 ```js
 foo.getFields() // ERROR!
@@ -330,13 +330,13 @@ foo.getFields() // ERROR!
 
 ---
 
-# Workaround - create all types
+### Workaround - create all types
 
-## Types need to be *complete*
+#### Types need to be *complete*
 
 ---
 
-## Unknown type names
+### Unknown type names
 
 ```graphql
 type Foo {
@@ -346,7 +346,7 @@ type Foo {
 
 ---
 
-## Unknown type names
+### Unknown type names
 
 ```javascript
 sdlAst.fields.forEach((field) => {
@@ -362,7 +362,7 @@ sdlAst.fields.forEach((field) => {
 
 ---
 
-## Enter Type Registry
+### Enter Type Registry
 
 ```js
 export const typeRegistry = {}
@@ -374,7 +374,7 @@ export const typeRegistry = {}
 
 ---
 
-# Type registry - basic usage
+### Type registry - basic usage
 
 ```js
   // ---
@@ -389,12 +389,13 @@ typeRegistry['Foo'] = Foo
 
 ---
 
-# Type registry - unknown type names
+### Type registry - unknown type names
 
 ```javascript
 sdlAst.fields.forEach((field) => {
   field[field.name.value] = {
-    type: typeRegistry[field.type.name.value],
+    type:
+      typeRegistry[field.type.name.value],
   }
 })
 ```
@@ -415,7 +416,7 @@ sdlAst.fields.forEach((field) => {
 
 ---
 
-## Better TR - not just an object
+### Better TR - not just an object
 
 ```js
 const typeRegistry = new TypeRegistry()
@@ -425,7 +426,7 @@ typeRegistry.getType('Bar')
 
 ---
 
-## Better TR - autoadd types
+### Better TR - autoadd types
 
 ```js
 typeRegistry.createObjectType({
@@ -440,7 +441,7 @@ typeRegistry.createObjectType({
 
 ---
 
-## Better  TR - resolve string types
+### Better  TR - resolve string types
 
 ```
 typeRegistry.createObjectType({
@@ -455,29 +456,35 @@ typeRegistry.createObjectType({
 
 ---
 
-## Better TR - extend types
+### Better TR - extend types
 
 ```js
-typeRegistry.getType('Bar').extendFields({
-  bars: {
-    type: 'Foo'
-  },
-})
+typeRegistry
+  .getType('Bar')
+  .extendFields({
+    bars: {
+      type: 'Foo'
+    },
+  })
 ```
 
 ---
 
-## Better TR - getOrCreate
+### Better TR - getOrCreate
 
 ```
-typeRegistry.getOrCreateObjectType('Foo', () => {
-  // config if doesn't exist
-})
+typeRegistry
+  .getOrCreateObjectType(
+    'Foo',
+    () => {
+      // config if doesn't exist
+    }
+  )
 ```
 
 ---
 
-## Better TR -  Build types to a schema
+### Better TR -  Build types to a schema
 
 ```js
 typeRegistry.buildSchema()
@@ -485,10 +492,12 @@ typeRegistry.buildSchema()
 
 ---
 
-## Better TR - Creating derived types
+### Better TR - Creating derived types
 
 ```js
-typeRegistry.getType('Bar').toInputObjectType()
+typeRegistry
+  .getType('Bar')
+  .toInputObjectType()
 ```
 
 ---
@@ -509,27 +518,27 @@ typeRegistry.getType('Bar').toInputObjectType()
 
 ---
 
-# Should I create my own?
+## Should I create my own?
 
 <Appear>
 
-## Maybe not!
+### Maybe not!
 
-## graphql-compose
+### graphql-compose
 
 </Appear>
 
 ---
 
-# graphql-compose
+## graphql-compose
 
 <Appear>
 
-## Library implementing type registry
+### Library implementing type registry
 
-## Has all the features I describe above and more
+### Features described above
 
-## Used extensively at Gatsby
+### Used extensively at Gatsby
 
 </Appear>
 
@@ -543,17 +552,17 @@ typeRegistry.getType('Bar').toInputObjectType()
 
 ---
 
-# Gatsby GraphQL is special
+### Gatsby GraphQL is special
 
 <Appear>
 
-## All GraphQL happens at build time
+#### Build time
 
-## Multiple sources of truth
+#### Multiple sources of truth
 
-## Partially inferred though data
+#### Inferred from data
 
-## Query roots are similar for all types
+#### Generated roots
 
 
 </Appear>
@@ -564,7 +573,7 @@ typeRegistry.getType('Bar').toInputObjectType()
 
 ---
 
-# Inferrence - source
+### Inferrence - source
 
 ```json
 {
@@ -576,7 +585,7 @@ typeRegistry.getType('Bar').toInputObjectType()
 
 ---
 
-# Inferrence - result
+### Inferrence - result
 
 ```graphql
 type FooJson implements Node {
@@ -588,7 +597,7 @@ type FooJson implements Node {
 
 ---
 
-# Inferrence - markdown
+### Inferrence - markdown
 
 ```md
 ---
@@ -599,7 +608,7 @@ type FooJson implements Node {
 
 ---
 
-# Inferrence - result
+### Inferrence - result
 
 ```graphql
 type MarkdownRemark implements Node {
@@ -615,7 +624,7 @@ type Frontmatter {
 
 ---
 
-# Defined types
+### Defined types
 
 ```graphql
 type FooJson implements Node {
@@ -627,7 +636,7 @@ type FooJson implements Node {
 
 ---
 
-# Schema control through extensions
+### Schema control
 
 ```graphql
 type FooJson implements Node @dontInfer {
@@ -640,7 +649,7 @@ type FooJson implements Node @dontInfer {
 
 ---
 
-# Declarative, composable resolvers
+### Declarative, composable resolvers
 
 ```graphql
 type FooJson {
@@ -654,7 +663,7 @@ type FooJson {
 
 ---
 
-# Generated query roots - source
+### Generated query roots - source
 
 ```graphql
 type FooJson implements Node {
@@ -666,7 +675,7 @@ type FooJson implements Node {
 
 ---
 
-# Generated query roots
+### Generated query roots
 
 ```graphql
 allFoo(filter: {
@@ -685,7 +694,7 @@ allFoo(filter: {
 
 ---
 
-# How it's done
+### How it's done
 
 <ol>
 
@@ -751,7 +760,7 @@ User types
 
 ---
 
-# Thank you (also use Gatsby)
+# Thank you!
 
 ## @freiksenet
 

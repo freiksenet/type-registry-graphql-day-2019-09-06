@@ -12,7 +12,7 @@ const preStyle = {
   wordSpacing: "normal",
   wordBreak: "normal",
   wordWrap: "normal",
-  lineHeight: "1.5",
+  lineHeight: "1.3",
   MozTabSize: "4",
   OTabSize: "4",
   tabSize: "4",
