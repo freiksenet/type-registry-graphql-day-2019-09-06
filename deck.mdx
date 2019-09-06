@@ -1,0 +1,563 @@
+import { Image, Appear } from 'mdx-deck'
+import hilight from '@mdx-deck/themes/syntax-highlighter-prism'
+import { theme } from './theme'
+import colors from "./colors"
+import { Invert } from './Invert'
+
+export const themes = [
+  theme,
+  hilight,
+]
+
+<Invert>
+
+# Programmatic GraphQL Schema
+
+#### Mikhail Novikov
+
+#### @freiksenet
+</Invert>
+
+---
+
+## Mikhail Novikov
+
+## @freiksenet
+
+#### Software Engineer at Gatsby Inc
+
+#### Reindex, React Finland, GraphQL
+
+#### Two cats
+
+---
+
+<Image src="./cats2.jpg"  />
+
+---
+
+# Contents
+
+<Appear>
+
+#### What?
+
+#### Why and why not?
+
+#### How?
+
+#### at Gatsby
+
+</Appear>
+
+
+---
+
+<Invert>
+
+# What is "programmatic"?
+
+</Invert>
+
+---
+
+## Programmatic `<>` Declarative
+
+---
+
+## SDL is programmatic
+
+---
+
+```graphql
+type Foo {
+  id: ID!
+}
+```
+
+---
+
+## GraphQL Frameworks are declarative
+
+#### Prisma
+
+#### AWS AppSync
+
+#### GraphCMS
+
+---
+
+## graphql-js declarative too
+
+Oh the irony
+
+---
+
+```js
+const Foo = new GraphQLObjectType({
+  name: 'Foo',
+  fields: {
+    id: {
+      type: GraphQLID,
+    },
+  },
+})
+```
+
+---
+
+# Programmatic is
+## using functions to create new types
+
+---
+
+```js
+function renameObjectType(type, newName) {
+  const config = type.toConfig()
+  return new GraphQLObjectType({
+    ...config,
+    name: newName,
+  })
+}
+```
+
+---
+
+```js
+function createEdgeType(type) {
+  // ...
+}
+
+function createConnectionType(type) {
+  // ...
+}
+```
+
+---
+
+# POV is important
+
+<Appear>
+
+## User vs Library author
+
+</Appear>
+
+---
+
+<Invert>
+
+# Why and why not?
+
+</Invert>
+
+---
+
+## NB: You might not need it
+
+---
+
+# Use case
+
+## Different source of truth
+
+---
+
+# Examples
+
+<Appear>
+
+## AppSync - user config
+
+## PostGraphile - DB
+
+## Gatsby - nodes
+
+## SDL - SDL text
+
+</Appear>
+
+---
+
+# Use case
+
+## Multiple sources of truth
+
+---
+
+# Examples
+
+<Appear>
+
+## Gatsby
+
+## Schema Stitching
+
+</Appear>
+
+---
+
+# Use case
+
+## Repetitive/generic types
+
+---
+
+# Examples
+
+<Appear>
+
+## Relay Connections
+
+## Input objects
+
+</Appear>
+
+---
+
+# Use case
+
+## Creating types partially
+
+---
+
+# Examples
+
+<Appear>
+
+## Back-references
+
+## Gatsby
+
+</Appear>
+
+---
+
+
+<Invert>
+
+# How?
+
+</Invert>
+
+---
+
+# graphql-js
+
+## has some issues
+
+---
+
+## Types must be defined
+
+```js
+const Foo = new GraphQLObjectType({
+  name: 'Foo',
+  fields: {
+    bar: {
+      type: Bar
+    }
+  }
+})
+```
+
+---
+
+## Workaround - Thunks
+
+
+```js
+  // ---
+  fields: () => ({
+    bar: {
+      type: Bar
+    }
+  })
+```
+
+---
+
+## Circular modules
+
+---
+
+## Workaround - Thunks 2
+
+```js
+  // ---
+  fields: () => {
+    const { Bar } = require('./Bar')
+    return {
+      bar: {
+        type: Bar
+      }
+    }
+  }
+```
+
+---
+
+# Inspecting fields
+
+```js
+foo.getFields()
+```
+
+---
+
+## Types need to be *complete*
+
+---
+
+## Unknown type names
+
+```graphql
+type Foo {
+  bar: Bar
+}
+```
+
+---
+
+## Workaround - ???
+
+---
+
+## Enter Type Registry
+
+```js
+export typeRegistry = {}
+```
+
+---
+
+# WUT?
+
+```js
+import typeRegistry from './typeRegistry'
+  // ---
+  fields: () => ({
+    bar: {
+      type: typeRegistry['Bar']
+    })
+  }
+  // ---
+typeRegistry['Foo'] = Foo
+```
+
+---
+
+# Type registry
+
+<Appear>
+
+## State of schema creation
+
+## Naively just holds types by name
+
+## Could be much more
+
+</Appear>
+
+---
+
+## Better TR - autoadd types
+
+```
+typeRegistry.createObjectType({
+  name: "Foo",
+  fields: () => ({
+    bar: {
+      type: typeRegistry.getType('Bar')
+    }
+  }),
+})
+```
+
+---
+
+## Better  TR - resolve string types
+
+```
+typeRegistry.createObjectType({
+  name: "Foo",
+  fields: {
+    bar: {
+      type: 'Bar'
+    }
+  },
+})
+```
+
+---
+
+## Better TR - extend types
+
+```js
+typeRegistry.getType('Bar').extendFields({
+  bars: {
+    type: 'Foo'
+  },
+})
+```
+
+---
+
+## Better TR - getOrCreate
+
+```
+typeRegistry.getOrCreateObjectType('Foo', () => {
+  // config if doesn't exist
+})
+```
+
+---
+
+## Better TR -  Build types to a schema
+
+```js
+typeRegistry.buildSchema()
+```
+
+---
+
+## Better TR - Creating derived types
+
+```js
+typeRegistry.getType('Bar').toInputObjectType()
+```
+
+---
+
+## Better Type Registry
+
+<Appear>
+
+### Holds all types
+
+### Concise programmatic syntax
+
+### Type modification after creation
+
+### Helpes to create types
+
+</Appear>
+
+---
+
+# Should I create my own?
+
+<Appear>
+
+## Maybe not!
+
+## graphql-compose
+
+</Appear>
+
+---
+
+# graphql-compose
+
+<Appear>
+
+## Library implementing type registry
+
+## Has all the features I describe above and more
+
+## Used extensively at Gatsby
+
+</Appear>
+
+---
+
+<Invert>
+
+# Usage at Gatsby?
+
+</Invert>
+
+---
+
+# Gatsby GraphQL is special
+
+<Appear>
+
+## Multiple sources of truth
+
+## Partially inferred though data
+
+## Query roots are similar for all types
+
+</Appear>
+
+---
+
+# Inferrence
+
+---
+
+# Defined types
+
+---
+
+# Schema control through extensions
+
+---
+
+# Declarative, composable resolvers
+
+---
+
+# Generated query roots
+
+---
+
+<Invert>
+
+# Takeaways
+
+</Invert>
+
+---
+
+# Takeaway 1
+
+## You might not need it
+
+---
+
+# Takeaway 2
+
+## Use if non-graphql source of truth
+
+
+---
+
+# Takeaway 3
+
+## Use to simplify repeated types
+
+---
+
+# Takeaway 4
+
+## Type Registry is a key pattern
+
+---
+
+# Takeaway 5
+
+## Use graphql-compose ;)
+
+---
+
+# Thank you (also use Gatsby)
+
+## @freiksenet
+
+## Mikhail Novikov
+
+---
+
+<Image src="./cats3.jpg"  />

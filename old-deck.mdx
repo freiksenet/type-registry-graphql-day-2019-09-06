@@ -1,0 +1,214 @@
+
+--
+-- <Invert>
+--
+-- # Why Gatsby uses GraphQL?
+--
+-- Mikhail Novikov
+--
+-- @freiksenet
+--
+-- </Invert>
+--
+-- ---
+--
+-- * Mikhail Novikov
+-- * @freiksenet
+-- * Software Engineer at Gatsby Inc
+-- * Reindex, React Finland, GraphQL
+-- * Two cats
+--
+-- ---
+--
+--
+-- <Image src="./cats.jpg" size="50%" />
+--
+-- ---
+--
+-- # Contents
+--
+-- * Intro to Gatsby
+-- * Gatsby data sourcing with GraphQL
+-- * Future of GraphQL in Gatsby
+--
+-- ---
+--
+-- <Invert>
+--
+-- # Gatsby
+--
+-- Quick overview
+--
+-- </Invert>
+--
+-- ---
+--
+-- A React framework for building fast websites and apps
+--
+-- ---
+--
+-- Produces static assets, with pre-rendered HTML
+--
+-- ---
+--
+-- Produces also JavaScript
+--
+-- ---
+--
+-- After initial load, HTML is rehydrated through React
+--
+-- ---
+--
+-- Code bundles are split per page and loaded on demand
+--
+-- ---
+--
+-- # Gatsby in brief
+--
+-- * Easy and fast to host (static assets on CDN)
+-- * Great performance out of the box (static rendering + js)
+-- * Static pages *and* interactive apps
+-- * Additional compile time optimizations (eg images)
+-- * Open-source
+--
+-- ---
+--
+-- # Gatsby
+--
+-- Compile-time optimized web app framework
+--
+-- ---
+--
+-- <Invert>
+--
+-- # Data sourcing
+--
+-- </Invert>
+--
+-- ---
+--
+-- Modern apps have many sources of data
+--
+-- * Filesystem (images, Markdown, MDX)
+-- * CMS (Contentful, Wordpress)
+-- * eCommerce (Shopify)
+-- * Custom APIs
+--
+-- ---
+--
+-- Pages might need combined data from different sources
+--
+-- ---
+--
+-- Pages might need a subset of data
+--
+-- ---
+--
+-- Pages should be able to query it in a unified way
+--
+-- ---
+--
+-- ## To summarize
+--
+-- * Apps need data from many sources
+-- * There should be unified API to access them
+-- * API should provide granularity
+--
+-- ---
+--
+-- # Enter GraphQL
+--
+-- ---
+--
+-- Source plugins add data to Gatsby
+--
+-- ---
+--
+-- Data gets a generated GraphQL schema
+--
+-- ---
+--
+-- That schema is uniform across different sources
+--
+-- ---
+--
+-- Every page queries data it needs through GraphQL
+--
+--
+-- ---
+--
+-- ## Why Gatsby uses GraphQL?
+--
+-- * One query language to get all data
+-- * Different sources unified into one API
+--
+-- ---
+--
+-- <Invert>
+--
+--   <Image size="90%" src="./flowchart.png" />
+--
+-- </Invert>
+--
+-- ---
+--
+-- Gatsby isn't just a compile-time optimized web app
+--
+-- ---
+--
+-- Gatsby is a compile-time API gateway
+--
+-- ---
+--
+-- <Invert>
+--
+-- # Future of GraphQL at Gatsby
+--
+-- </Invert>
+--
+-- ---
+--
+-- # Schema customization
+--
+-- ---
+--
+-- More control over your Gatsby schema
+--
+-- ---
+--
+-- Fixing the schema against inference issues
+--
+-- ---
+--
+-- Plugins can leverage this with introspectable sources
+--
+-- ---
+--
+-- # Gatsby Themes
+--
+-- ---
+--
+-- Abstract out parts of your website
+--
+-- ---
+--
+-- <s>Starter</s> -> Theme
+--
+-- ---
+--
+-- Theme data types
+--
+-- ---
+--
+-- Semantic types instead of source types
+--
+-- <s>MarkdownRemark</s> -> Blog
+--
+-- ---
+--
+--
+-- # Thank you!
+--
+-- @freiksenet
+--
+-- Mikhail Novikov
