@@ -65,7 +65,7 @@ export const themes = [
 
 ---
 
-## SDL is programmatic
+## SDL is declarative
 
 ---
 
@@ -107,7 +107,14 @@ const Foo = new GraphQLObjectType({
 ---
 
 # Programmatic is
-## using functions to create new types
+
+<Appear>
+
+## using functions to create types
+
+## from other sources than a type config
+
+</Appear>
 
 ---
 
@@ -118,6 +125,14 @@ function renameObjectType(type, newName) {
     ...config,
     name: newName,
   })
+}
+```
+
+---
+
+```js
+function createTypeFromSdl(sdl) {
+  // ...
 }
 ```
 
@@ -238,13 +253,15 @@ function createConnectionType(type) {
 
 # How?
 
+### JavaScript edition
+
 </Invert>
 
 ---
 
-# graphql-js
+# Programmatic graphql-js
 
-## has some issues
+## requires some tricks
 
 ---
 
@@ -255,7 +272,7 @@ const Foo = new GraphQLObjectType({
   name: 'Foo',
   fields: {
     bar: {
-      type: Bar
+      type: Bar // undefined, error
     }
   }
 })
@@ -279,6 +296,14 @@ const Foo = new GraphQLObjectType({
 
 ## Circular modules
 
+```js
+// Bar.js
+const Foo = require('./Foo')
+
+// Foo.js
+const Bar = require('./Bar')
+```
+
 ---
 
 ## Workaround - Thunks 2
@@ -300,10 +325,12 @@ const Foo = new GraphQLObjectType({
 # Inspecting fields
 
 ```js
-foo.getFields()
+foo.getFields() // ERROR!
 ```
 
 ---
+
+# Workaround - create all types
 
 ## Types need to be *complete*
 
@@ -319,6 +346,18 @@ type Foo {
 
 ---
 
+## Unknown type names
+
+```javascript
+sdlAst.fields.forEach((field) => {
+  field[field.name.value] = {
+    type: field.type.name.value, // STRING!
+  }
+})
+```
+
+---
+
 ## Workaround - ???
 
 ---
@@ -326,15 +365,18 @@ type Foo {
 ## Enter Type Registry
 
 ```js
-export typeRegistry = {}
+export const typeRegistry = {}
 ```
 
 ---
 
-# WUT?
+<Image src="./wuuut.jpeg" size="50%" />
+
+---
+
+# Type registry - basic usage
 
 ```js
-import typeRegistry from './typeRegistry'
   // ---
   fields: () => ({
     bar: {
@@ -343,6 +385,18 @@ import typeRegistry from './typeRegistry'
   }
   // ---
 typeRegistry['Foo'] = Foo
+```
+
+---
+
+# Type registry - unknown type names
+
+```javascript
+sdlAst.fields.forEach((field) => {
+  field[field.name.value] = {
+    type: typeRegistry[field.type.name.value],
+  }
+})
 ```
 
 ---
@@ -361,9 +415,19 @@ typeRegistry['Foo'] = Foo
 
 ---
 
+## Better TR - not just an object
+
+```js
+const typeRegistry = new TypeRegistry()
+typeRegistry.addType(Bar)
+typeRegistry.getType('Bar')
+```
+
+---
+
 ## Better TR - autoadd types
 
-```
+```js
 typeRegistry.createObjectType({
   name: "Foo",
   fields: () => ({
@@ -483,11 +547,14 @@ typeRegistry.getType('Bar').toInputObjectType()
 
 <Appear>
 
+## All GraphQL happens at build time
+
 ## Multiple sources of truth
 
 ## Partially inferred though data
 
 ## Query roots are similar for all types
+
 
 </Appear>
 
@@ -497,21 +564,153 @@ typeRegistry.getType('Bar').toInputObjectType()
 
 ---
 
+# Inferrence - source
+
+```json
+{
+  "id": "5",
+  "title": "Gatsby is the best!",
+  "date": "2019-09-06"
+}
+```
+
+---
+
+# Inferrence - result
+
+```graphql
+type FooJson implements Node {
+  id: ID!
+  title: String
+  date: Date
+}
+```
+
+---
+
+# Inferrence - markdown
+
+```md
+---
+"title": "Gatsby is the best!",
+"date": "2019-09-06"
+---
+```
+
+---
+
+# Inferrence - result
+
+```graphql
+type MarkdownRemark implements Node {
+  id: ID!
+  frontmatter: Frontmatter
+}
+
+type Frontmatter {
+  title: String
+  date: Date
+}
+```
+
+---
+
 # Defined types
+
+```graphql
+type FooJson implements Node {
+  id: ID!
+  title: String
+  date: Date
+}
+```
 
 ---
 
 # Schema control through extensions
 
+```graphql
+type FooJson implements Node @dontInfer {
+  id: ID!
+  title: String
+  date: Date @dateformat
+  comments: [Comment] @link(by: "fooId")
+}
+```
+
 ---
 
 # Declarative, composable resolvers
+
+```graphql
+type FooJson {
+  date: Date @dateformat
+  localizedDate: Date
+    @proxy(from: "date")
+    @dateformat(locale: "de")
+}
+
+```
+
+---
+
+# Generated query roots - source
+
+```graphql
+type FooJson implements Node {
+  id: ID!
+  title: String
+  date: Date
+}
+```
 
 ---
 
 # Generated query roots
 
+```graphql
+allFoo(filter: {
+  title: { eq: "Foo" }
+  sort: { fields: date }
+})
+```
+
 ---
+
+# How it's done
+
+---
+
+<Image src="./complicated.jpg" size="50%"/>
+
+---
+
+# How it's done
+
+<ol>
+
+<Appear>
+
+<li>
+User types
+</li>
+
+<li>Inferred types</li>
+
+<li>Merging</li>
+
+<li>Service type generation</li>
+
+<li>Query generation</li>
+
+<li>Third-party schemas</li>
+
+</Appear>
+
+</ol>
+
+---
+
 
 <Invert>
 
